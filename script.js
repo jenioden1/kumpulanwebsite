@@ -170,43 +170,107 @@ function createUMKMCard(umkm) {
     return card;
 }
 
-// Function to render Destinasi
+// Function to render Destinasi (DEPRECATED - Data is now in HTML)
+// This function is kept for backward compatibility but won't clear existing HTML
 function renderDestinasi() {
     const grid = document.getElementById('destinasiGrid');
-    if (!grid) return;
+    if (!grid) {
+        console.warn('destinasiGrid element not found');
+        return;
+    }
     
+    // Don't clear if content already exists (data is now in HTML)
+    if (grid.children.length > 0) {
+        console.log('Destinasi data already exists in HTML, skipping render');
+        return;
+    }
+    
+    // Only render if grid is empty (for backward compatibility)
     grid.innerHTML = '';
+    
+    // Render all destinasi cards
     destinasiData.forEach((destinasi, index) => {
-        const card = createDestinasiCard(destinasi);
-        card.setAttribute('data-aos-delay', (index % 3) * 100);
-        grid.appendChild(card);
+        try {
+            const card = createDestinasiCard(destinasi);
+            card.setAttribute('data-aos-delay', (index % 3) * 100);
+            grid.appendChild(card);
+        } catch (error) {
+            console.error('Error creating destinasi card:', error);
+        }
     });
     
-    // Refresh AOS after rendering
-    setTimeout(() => AOS.refresh(), 100);
+    // Refresh AOS after rendering (non-blocking)
+    if (typeof AOS !== 'undefined') {
+        setTimeout(() => {
+            try {
+                AOS.refresh();
+            } catch (error) {
+                console.warn('AOS refresh error:', error);
+            }
+        }, 100);
+    }
 }
 
-// Function to render UMKM
+// Function to render UMKM (DEPRECATED - Data is now in HTML)
+// This function is kept for backward compatibility but won't clear existing HTML
 function renderUMKM(category = 'all') {
     const grid = document.getElementById('umkmGrid');
-    if (!grid) return;
+    if (!grid) {
+        console.warn('umkmGrid element not found');
+        return;
+    }
     
+    // Don't clear if content already exists (data is now in HTML)
+    if (grid.children.length > 0) {
+        console.log('UMKM data already exists in HTML, skipping render');
+        // If category is specified, use filter function instead
+        if (category !== 'all') {
+            // Filter existing cards
+            const umkmCards = document.querySelectorAll('.umkm-card');
+            umkmCards.forEach(card => {
+                const cardCategory = card.dataset.category;
+                if (cardCategory === category) {
+                    card.style.display = '';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+        return;
+    }
+    
+    // Only render if grid is empty (for backward compatibility)
     grid.innerHTML = '';
+    
+    // Filter data by category
     const filteredData = category === 'all' 
         ? umkmData 
         : umkmData.filter(umkm => umkm.category === category);
     
+    // Render all UMKM cards
     filteredData.forEach((umkm, index) => {
-        const card = createUMKMCard(umkm);
-        card.setAttribute('data-aos-delay', (index % 3) * 100);
-        grid.appendChild(card);
+        try {
+            const card = createUMKMCard(umkm);
+            card.setAttribute('data-aos-delay', (index % 3) * 100);
+            grid.appendChild(card);
+        } catch (error) {
+            console.error('Error creating UMKM card:', error);
+        }
     });
     
-    // Refresh AOS after rendering
-    setTimeout(() => AOS.refresh(), 100);
+    // Refresh AOS after rendering (non-blocking)
+    if (typeof AOS !== 'undefined') {
+        setTimeout(() => {
+            try {
+                AOS.refresh();
+            } catch (error) {
+                console.warn('AOS refresh error:', error);
+            }
+        }, 100);
+    }
 }
 
-// Filter Functionality
+// Filter Functionality - Works with HTML cards
 function setupFilters() {
     const filterButtons = document.querySelectorAll('.filter-btn');
     
@@ -223,8 +287,28 @@ function setupFilters() {
             // Get category from data attribute
             const category = this.dataset.category || 'all';
             
-            // Render filtered UMKM
-            renderUMKM(category);
+            // Get all UMKM cards (now in HTML)
+            const umkmCards = document.querySelectorAll('.umkm-card');
+            
+            // Filter cards based on category
+            umkmCards.forEach(card => {
+                const cardCategory = card.dataset.category;
+                
+                if (category === 'all' || cardCategory === category) {
+                    card.style.display = '';
+                    // Add fade-in animation
+                    card.style.animation = 'fadeInUp 0.5s ease-out';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+            
+            // Refresh AOS after filtering
+            if (typeof AOS !== 'undefined') {
+                setTimeout(() => {
+                    AOS.refresh();
+                }, 100);
+            }
         });
     });
 }
@@ -306,22 +390,48 @@ function setupNavbarScroll() {
 function showDestinasiDetail(name, description, location) {
     const modal = document.createElement('div');
     modal.className = 'detail-modal';
+    
+    // Escape HTML to prevent XSS
+    const escapeHtml = (text) => {
+        const div = document.createElement('div');
+        div.textContent = text;
+        return div.innerHTML;
+    };
+    
+    // Create modal HTML without Tailwind dark mode classes - rely on pure CSS
     modal.innerHTML = `
         <div class="detail-modal-content">
             <span class="detail-modal-close">&times;</span>
-            <h2>${name}</h2>
-            <p class="detail-location"><strong>Lokasi:</strong> ${location}</p>
-            <div class="detail-description">${description}</div>
+            <h2>${escapeHtml(name)}</h2>
+            <p class="detail-location"><strong>Lokasi:</strong> ${escapeHtml(location)}</p>
+            <div class="detail-description">${escapeHtml(description)}</div>
         </div>
     `;
     
     document.body.appendChild(modal);
     
+    // Prevent body scroll when modal is open
+    document.body.style.overflow = 'hidden';
+    
     const closeBtn = modal.querySelector('.detail-modal-close');
-    closeBtn.onclick = () => modal.remove();
-    modal.onclick = (e) => {
-        if (e.target === modal) modal.remove();
+    const closeModal = () => {
+        modal.remove();
+        document.body.style.overflow = '';
     };
+    
+    closeBtn.onclick = closeModal;
+    modal.onclick = (e) => {
+        if (e.target === modal) closeModal();
+    };
+    
+    // Close on Escape key
+    const handleEscape = (e) => {
+        if (e.key === 'Escape') {
+            closeModal();
+            document.removeEventListener('keydown', handleEscape);
+        }
+    };
+    document.addEventListener('keydown', handleEscape);
 }
 
 // Parallax Effect
@@ -677,8 +787,51 @@ function animateCounters() {
     });
 }
 
+// Function to initialize content (data is now in HTML, so just setup filters and AOS)
+function initializeAndRenderContent() {
+    // Data is now directly in HTML, so we don't need to render
+    // Just setup filters and refresh AOS
+    
+    // Ensure cards are visible (in case CSS hid them)
+    const destinasiCards = document.querySelectorAll('.destinasi-card');
+    const umkmCards = document.querySelectorAll('.umkm-card');
+    
+    destinasiCards.forEach(card => {
+        card.style.display = '';
+        card.style.visibility = 'visible';
+        card.style.opacity = '1';
+    });
+    
+    umkmCards.forEach(card => {
+        card.style.display = '';
+        card.style.visibility = 'visible';
+        card.style.opacity = '1';
+    });
+    
+    // Setup filters for UMKM
+    setupFilters();
+    
+    // Refresh AOS if available
+    if (typeof AOS !== 'undefined') {
+        setTimeout(() => {
+            AOS.refresh();
+        }, 150);
+    }
+}
+
 // Initialize everything when DOM is loaded
-document.addEventListener('DOMContentLoaded', () => {
+function initApp() {
+    // FIRST PRIORITY: Render content immediately (don't wait for anything)
+    initializeAndRenderContent();
+    
+    // Setup basic functionality
+    setupNavigation();
+    setupActiveNavLink();
+    setupNavbarScroll();
+    setupDarkMode();
+    setupScrollProgress();
+    setupScrollToTop();
+    
     // Hide loading screen
     hideLoadingScreen();
     
@@ -687,20 +840,24 @@ document.addEventListener('DOMContentLoaded', () => {
         initParticles();
     }, 500);
     
-    // Initialize AOS
-    AOS.init({
-        duration: 1000,
-        once: true,
-        offset: 100,
-        easing: 'ease-in-out-cubic',
-        mirror: false
-    });
-    
-    // Initialize GSAP Animations
-    setTimeout(() => {
-        initGSAPAnimations();
-        setupMagneticEffect();
-    }, 3000);
+    // Initialize AOS after content is rendered
+    if (typeof AOS !== 'undefined') {
+        AOS.init({
+            duration: 1000,
+            once: true,
+            offset: 100,
+            easing: 'ease-in-out-cubic',
+            mirror: false
+        });
+        
+        // Refresh AOS again after a short delay to ensure all cards are processed
+        setTimeout(() => {
+            const cards = document.querySelectorAll('.destinasi-card, .umkm-card');
+            if (cards.length > 0 && typeof AOS !== 'undefined') {
+                AOS.refresh();
+            }
+        }, 300);
+    }
     
     // Initialize Smooth Scroll
     initSmoothScroll();
@@ -708,31 +865,38 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize Parallax
     setupParallax();
     
-    // Setup Scroll to Top
-    setupScrollToTop();
-    
-    // Setup Scroll Progress
-    setupScrollProgress();
-    
-    // Setup Dark Mode
-    setupDarkMode();
-    
     // Animate Counters
     animateCounters();
     
-    renderDestinasi();
-    renderUMKM('all');
-    setupFilters();
-    setupNavigation();
-    setupActiveNavLink();
-    setupNavbarScroll();
-    
-    // Add AOS to dynamically rendered cards
+    // Initialize GSAP Animations (lower priority)
     setTimeout(() => {
-        document.querySelectorAll('.destinasi-card, .umkm-card').forEach((card, index) => {
-            card.setAttribute('data-aos', 'fade-up');
-            card.setAttribute('data-aos-delay', (index % 3) * 100);
-        });
-        AOS.refresh();
-    }, 100);
+        initGSAPAnimations();
+        setupMagneticEffect();
+    }, 3000);
+}
+
+// Multiple initialization strategies to ensure content always loads
+// Strategy 1: Run immediately if DOM is already loaded
+if (document.readyState === 'loading') {
+    // Strategy 2: Wait for DOMContentLoaded
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    // DOM is already loaded - run immediately
+    initApp();
+}
+
+// Strategy 3: Fallback on window load to ensure everything is rendered
+window.addEventListener('load', () => {
+    // Ensure filters are setup (data is now in HTML)
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    if (filterButtons.length > 0) {
+        setupFilters();
+    }
+    
+    // Final AOS refresh
+    if (typeof AOS !== 'undefined') {
+        setTimeout(() => {
+            AOS.refresh();
+        }, 100);
+    }
 });
