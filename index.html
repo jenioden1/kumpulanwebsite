@@ -3,72 +3,517 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Daftar UMKM Desa Mandalahahyu - Kumpulan usaha mikro, kecil, dan menengah dari Desa Mandalahahyu, Kecamatan Salopa, Kabupaten Tasikmalaya">
-    <title>UMKM Desa Mandalahahyu - Kumpulan Usaha Lokal</title>
-    <link rel="stylesheet" href="styles.css">
+    <meta name="description" content="Explore Mandalahahyu - Portal Wisata dan UMKM Desa Mandalahahyu, Kecamatan Salopa, Kabupaten Tasikmalaya">
+    <title>Explore Mandalahahyu - Wisata & UMKM Desa Mandalahahyu</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts - Nunito (More Readable & Friendly) -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&family=Nunito+Sans:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- AOS - Animate On Scroll -->
+    <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
+    
+    <!-- GSAP for Advanced Animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    
+    <!-- Smooth Scroll -->
+    <script src="https://cdn.jsdelivr.net/gh/cferdinandi/smooth-scroll@15.0.0/dist/smooth-scroll.polyfills.min.js"></script>
+    
+    <!-- Particles.js for Background Effects -->
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1B4332',
+                        secondary: '#2D6A4F',
+                        accent: '#40916C',
+                        light: '#74C69D',
+                        cream: '#F5F1E8',
+                        dark: '#081C15',
+                        gold: '#F4A261',
+                        orange: '#E76F51',
+                    },
+                    fontFamily: {
+                        sans: ['Nunito Sans', 'Nunito', 'system-ui', 'sans-serif'],
+                        display: ['Nunito', 'Nunito Sans', 'system-ui', 'sans-serif'],
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+                        'gradient': 'gradient 15s ease infinite',
+                        'slide-up': 'slideUp 0.8s ease-out',
+                        'fade-in': 'fadeIn 1s ease-out',
+                        'scale-in': 'scaleIn 0.5s ease-out',
+                        'shimmer': 'shimmer 3s infinite',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        gradient: {
+                            '0%, 100%': { backgroundPosition: '0% 50%' },
+                            '50%': { backgroundPosition: '100% 50%' },
+                        },
+                        slideUp: {
+                            '0%': { opacity: '0', transform: 'translateY(50px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0' },
+                            '100%': { opacity: '1' },
+                        },
+                        scaleIn: {
+                            '0%': { opacity: '0', transform: 'scale(0.9)' },
+                            '100%': { opacity: '1', transform: 'scale(1)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-1000px 0' },
+                            '100%': { backgroundPosition: '1000px 0' },
+                        },
+                    },
+                }
+            }
+        }
+    </script>
+    <link rel="stylesheet" href="styles.css">
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="header-content">
-                <h1 class="logo">🏘️ UMKM Desa Mandalahahyu</h1>
-                <p class="subtitle">Kumpulan Usaha Mikro, Kecil, dan Menengah</p>
+<body class="font-sans bg-cream dark:bg-gray-900 text-gray-800 dark:text-gray-100 antialiased overflow-x-hidden transition-colors duration-300">
+    <!-- Progress Scroll Indicator -->
+    <div id="scroll-progress" class="fixed top-0 left-0 h-1 bg-gradient-to-r from-accent via-secondary to-accent dark:from-light dark:via-accent dark:to-light z-50 transition-all duration-300" style="width: 0%;"></div>
+    
+    <!-- Loading Screen -->
+    <div id="loading-screen" class="fixed inset-0 bg-gradient-to-br from-primary via-secondary to-accent z-50 flex items-center justify-center">
+        <div class="text-center">
+            <div class="relative w-32 h-32 mb-8 mx-auto">
+                <div class="absolute inset-0 border-4 border-white/30 rounded-full"></div>
+                <div class="absolute inset-0 border-4 border-transparent border-t-white rounded-full animate-spin"></div>
+                <div class="absolute inset-4 border-4 border-white/20 rounded-full"></div>
+                <div class="absolute inset-4 border-4 border-transparent border-t-white/60 rounded-full animate-spin animation-reverse"></div>
+            </div>
+            <h2 class="text-3xl font-black text-white mb-2 animate-pulse">Explore Mandalahahyu</h2>
+            <p class="text-white/80 text-lg">Memuat keindahan alam...</p>
+        </div>
+    </div>
+
+    <!-- Animated Background Particles -->
+    <div id="particles-js" class="fixed inset-0 -z-50 opacity-30"></div>
+
+    <!-- Floating Action Button - Scroll to Top -->
+    <div id="scroll-top-btn" class="fixed bottom-8 right-8 w-14 h-14 bg-gradient-to-r from-accent to-secondary dark:from-accent dark:to-secondary rounded-full shadow-2xl flex items-center justify-center cursor-pointer opacity-0 invisible transition-all duration-300 z-40 hover:scale-110 hover:shadow-3xl group">
+        <span class="text-2xl text-white group-hover:-translate-y-1 transition-transform duration-300">↑</span>
+    </div>
+
+    <!-- Navigation - Enhanced Design -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl shadow-xl z-50 transition-all duration-300 border-b-2 border-gradient-to-r from-accent/30 via-secondary/30 to-accent/30 dark:border-gray-700/30" data-aos="fade-down">
+        <div class="container mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <a href="#home" class="text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r from-primary via-secondary to-accent dark:from-light dark:via-accent dark:to-light hover:from-accent hover:via-secondary hover:to-primary transition-all duration-500 flex items-center gap-2 group animate-gradient-wave">
+                    <span class="text-3xl group-hover:scale-110 group-hover:rotate-12 transition-all duration-300 animate-float-up-down">🏘️</span>
+                    <span>Explore Mandalahahyu</span>
+                </a>
+                <div class="flex items-center gap-4">
+                    <ul id="navMenu" class="hidden md:flex gap-6 items-center">
+                        <li><a href="#home" class="nav-link text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-light font-semibold transition-all duration-300 relative group px-3 py-2 rounded-lg hover:bg-accent/10 dark:hover:bg-accent/20">Beranda</a></li>
+                        <li><a href="#destinasi" class="nav-link text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-light font-semibold transition-all duration-300 relative group px-3 py-2 rounded-lg hover:bg-accent/10 dark:hover:bg-accent/20">Destinasi</a></li>
+                        <li><a href="#umkm" class="nav-link text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-light font-semibold transition-all duration-300 relative group px-3 py-2 rounded-lg hover:bg-accent/10 dark:hover:bg-accent/20">UMKM</a></li>
+                        <li><a href="#kontak" class="nav-link text-gray-700 dark:text-gray-200 hover:text-accent dark:hover:text-light font-semibold transition-all duration-300 relative group px-3 py-2 rounded-lg hover:bg-accent/10 dark:hover:bg-accent/20">Kontak</a></li>
+                    </ul>
+                    <!-- Dark Mode Toggle in Navbar -->
+                    <button id="theme-toggle" class="relative w-12 h-12 bg-gradient-to-br from-gray-100 to-gray-200 dark:from-gray-800 dark:to-gray-700 rounded-xl shadow-lg hover:shadow-xl flex items-center justify-center cursor-pointer transition-all duration-300 hover:scale-110 group border-2 border-gray-300 dark:border-gray-600 animate-glow-pulse" aria-label="Toggle dark mode">
+                        <span id="theme-icon" class="text-2xl transition-all duration-300 group-hover:rotate-180 animate-float-up-down">🌙</span>
+                        <div class="absolute inset-0 bg-gradient-to-br from-accent/20 to-secondary/20 rounded-xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 animate-gradient-wave"></div>
+                    </button>
+                    <button id="navToggle" class="md:hidden flex flex-col gap-1.5 p-2 group" aria-label="Toggle navigation">
+                        <span class="w-6 h-0.5 bg-primary dark:bg-gray-200 transition-all duration-300 group-hover:bg-accent"></span>
+                        <span class="w-6 h-0.5 bg-primary dark:bg-gray-200 transition-all duration-300 group-hover:bg-accent"></span>
+                        <span class="w-6 h-0.5 bg-primary dark:bg-gray-200 transition-all duration-300 group-hover:bg-accent"></span>
+                    </button>
+                </div>
             </div>
         </div>
-    </header>
+    </nav>
 
     <!-- Hero Section -->
-    <section class="hero">
-        <div class="container">
-            <div class="hero-content">
-                <h2 class="hero-title">Selamat Datang di Portal UMKM Desa Mandalahahyu</h2>
-                <p class="hero-description">
-                    Temukan berbagai produk dan jasa berkualitas dari 7 UMKM terpilih di Desa Mandalahahyu, 
-                    Kecamatan Salopa, Kabupaten Tasikmalaya, Jawa Barat
+    <section id="home" class="relative min-h-screen flex items-center justify-center text-center text-white overflow-hidden pt-20">
+        <!-- Hero Background Image -->
+        <div class="absolute inset-0 -z-30">
+            <img src="HEROGAMBAR.jpeg" alt="Desa Mandalahahyu" class="w-full h-full object-cover parallax-bg">
+            <div class="absolute inset-0 bg-gradient-to-br from-primary/50 via-secondary/40 to-accent/50"></div>
+        </div>
+        
+        <!-- Parallax Background Overlay -->
+        <div class="parallax-bg absolute inset-0 bg-gradient-to-br from-primary/40 via-secondary/30 to-accent/40 animate-gradient bg-[length:200%_200%] -z-20"></div>
+        <div class="absolute inset-0 bg-dark/30 -z-10"></div>
+        
+        <!-- Floating Shapes with Parallax -->
+        <div class="parallax-shape parallax-slow absolute top-20 left-10 w-20 h-20 bg-white/10 rounded-full blur-xl animate-float"></div>
+        <div class="parallax-shape parallax-fast absolute bottom-20 right-10 w-32 h-32 bg-light/20 rounded-full blur-2xl animate-float animation-delay-2000"></div>
+        <div class="parallax-shape parallax-slow absolute top-1/2 left-1/4 w-16 h-16 bg-gold/20 rounded-full blur-lg animate-float animation-delay-4000"></div>
+        
+        <!-- Grid Pattern Overlay -->
+        <div class="absolute inset-0 opacity-10 -z-10 grid-pattern"></div>
+        
+        <div class="container mx-auto px-4 py-20 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                <div class="inline-block mb-6 px-6 py-2 bg-white/20 backdrop-blur-md rounded-full border border-white/30 animate-scale-in hover:bg-white/30 transition-all duration-300 cursor-default animate-shimmer-running" data-aos="zoom-in" data-aos-delay="100">
+                    <span class="text-sm font-semibold">✨ Destinasi Wisata & UMKM Terbaik</span>
+                </div>
+                <h1 class="text-6xl md:text-7xl lg:text-8xl font-black mb-6 drop-shadow-2xl leading-tight" data-aos="fade-up" data-aos-delay="200">
+                    <span class="block text-white">Explore</span>
+                    <span class="block text-transparent bg-clip-text bg-gradient-to-r from-light via-white to-light animate-gradient bg-[length:200%_200%]">Mandalahahyu</span>
+                </h1>
+                <p class="text-2xl md:text-3xl lg:text-4xl font-bold mb-4 drop-shadow-lg" data-aos="fade-up" data-aos-delay="400">
+                    Jelajahi Keindahan Alam & Kekayaan Budaya
                 </p>
+                <p class="text-xl md:text-2xl mb-2 opacity-95 drop-shadow-md" data-aos="fade-up" data-aos-delay="500">
+                    Destinasi Wisata Menawan & UMKM Terpercaya
+                </p>
+                <p class="text-lg md:text-xl mb-12 opacity-90 drop-shadow-sm flex items-center justify-center gap-2" data-aos="fade-up" data-aos-delay="600">
+                    <span>📍</span> Desa Mandalahahyu - Salopa, Tasikmalaya, Jawa Barat
+                </p>
+                <div class="flex flex-col sm:flex-row gap-4 justify-center items-center" data-aos="fade-up" data-aos-delay="700">
+                    <a href="#destinasi" class="group relative px-10 py-5 bg-white dark:bg-gray-800 text-primary dark:text-white rounded-full font-bold text-lg shadow-2xl hover:shadow-3xl hover:-translate-y-2 hover:bg-light dark:hover:bg-gray-700 transition-all duration-300 overflow-hidden animate-glow-pulse">
+                        <span class="relative z-10 flex items-center gap-2">
+                            <span>Mulai Petualangan</span>
+                            <span class="group-hover:translate-x-1 transition-transform duration-300 animate-float-up-down">→</span>
+                        </span>
+                    </a>
+                    <a href="#umkm" class="px-10 py-5 bg-white/20 backdrop-blur-md text-white border-2 border-white/50 rounded-full font-bold text-lg hover:bg-white/30 hover:border-white hover:scale-105 transition-all duration-300 animate-shimmer-running">
+                        Lihat UMKM
+                    </a>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- UMKM List Section -->
-    <section class="umkm-section">
-        <div class="container">
-            <h2 class="section-title">Daftar UMKM</h2>
-            <div class="umkm-grid" id="umkmGrid">
-                <!-- UMKM Cards will be inserted here by JavaScript -->
+    <!-- Stats Section - Unique Interactive Design -->
+    <section class="py-24 bg-white dark:bg-gray-900 relative overflow-hidden transition-colors duration-300">
+        <!-- Animated Background -->
+        <div class="absolute inset-0 opacity-5">
+            <div class="absolute top-0 left-0 w-96 h-96 bg-accent rounded-full blur-3xl animate-pulse animate-particles-float"></div>
+            <div class="absolute bottom-0 right-0 w-96 h-96 bg-secondary rounded-full blur-3xl animate-pulse animation-delay-2000 animate-particles-float" style="animation-delay: 1s;"></div>
+        </div>
+        
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <h2 class="text-4xl md:text-5xl font-black text-primary dark:text-white mb-4">
+                    Mengapa <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-secondary">Mandalahahyu?</span>
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 max-w-2xl mx-auto">Temukan alasan mengapa Desa Mandalahahyu menjadi destinasi pilihan</p>
+            </div>
+            
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Stat Card 1 - Destinasi -->
+                    <div class="group relative stats-card-interactive" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="absolute inset-0 bg-gradient-to-br from-accent/20 via-light/10 to-transparent rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                        <div class="relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border-2 border-light/30 dark:border-gray-700/30 hover:border-accent/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl overflow-hidden h-full flex flex-col animate-breathe">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-accent/10 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+                            <div class="relative z-10 flex flex-col h-full">
+                                <div class="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-accent to-light shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-rotate animate-glow-pulse">
+                                    <span class="text-4xl animate-float-up-down">🏞️</span>
+                                </div>
+                                <div class="text-7xl font-black bg-gradient-to-r from-accent via-secondary to-accent bg-clip-text text-transparent mb-4 group-hover:scale-110 transition-transform duration-500" data-count="3">0</div>
+                                <h3 class="text-xl font-black text-primary dark:text-white mb-2">Destinasi Wisata</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Tiga keindahan alam yang memukau menanti untuk dijelajahi</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stat Card 2 - UMKM -->
+                    <div class="group relative stats-card-interactive" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="absolute inset-0 bg-gradient-to-br from-gold/20 via-orange/10 to-transparent rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                        <div class="relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border-2 border-light/30 dark:border-gray-700/30 hover:border-gold/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl overflow-hidden h-full flex flex-col">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-gold/10 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+                            <div class="relative z-10 flex flex-col h-full">
+                                <div class="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-gold to-orange shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-rotate animate-glow-pulse">
+                                    <span class="text-4xl animate-float-up-down">🛍️</span>
+                                </div>
+                                <div class="text-7xl font-black bg-gradient-to-r from-gold via-orange to-gold bg-clip-text text-transparent mb-4 group-hover:scale-110 transition-transform duration-500" data-count="7">0</div>
+                                <h3 class="text-xl font-black text-primary dark:text-white mb-2">UMKM Terpilih</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Produk dan jasa berkualitas dari warga desa</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stat Card 3 - Desa -->
+                    <div class="group relative stats-card-interactive" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="absolute inset-0 bg-gradient-to-br from-primary/20 via-secondary/10 to-transparent rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                        <div class="relative bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-lg border-2 border-light/30 dark:border-gray-700/30 hover:border-primary/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl overflow-hidden h-full flex flex-col">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-gradient-to-br from-primary/10 to-transparent rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+                            <div class="relative z-10 flex flex-col h-full">
+                                <div class="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-gradient-to-br from-primary to-secondary shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-rotate animate-glow-pulse">
+                                    <span class="text-4xl animate-float-up-down">🏆</span>
+                                </div>
+                                <div class="text-7xl font-black bg-gradient-to-r from-primary via-secondary to-primary bg-clip-text text-transparent mb-4 group-hover:scale-110 transition-transform duration-500" data-count="1">0</div>
+                                <h3 class="text-xl font-black text-primary dark:text-white mb-2">Desa Unggulan</h3>
+                                <p class="text-gray-600 dark:text-gray-300 text-sm leading-relaxed">Desa Mandalahahyu, Salopa, Tasikmalaya</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Stat Card 4 - Experience -->
+                    <div class="group relative stats-card-interactive" data-aos="zoom-in" data-aos-delay="400">
+                        <div class="absolute inset-0 bg-gradient-to-br from-light/20 via-accent/10 to-transparent rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
+                        <div class="relative bg-gradient-to-br from-accent via-secondary to-primary rounded-3xl p-8 shadow-lg border-2 border-light/30 hover:border-white/50 transition-all duration-500 hover:-translate-y-3 hover:shadow-2xl overflow-hidden text-white h-full flex flex-col">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 group-hover:scale-150 transition-transform duration-700"></div>
+                            <div class="relative z-10 flex flex-col h-full">
+                                <div class="inline-flex items-center justify-center w-20 h-20 mb-6 rounded-2xl bg-white/20 backdrop-blur-md shadow-lg group-hover:scale-110 group-hover:rotate-6 transition-all duration-500 animate-float-rotate animate-glow-pulse">
+                                    <span class="text-4xl animate-float-up-down">⭐</span>
+                                </div>
+                                <div class="text-7xl font-black text-white mb-4 group-hover:scale-110 transition-transform duration-500">∞</div>
+                                <h3 class="text-xl font-black mb-2">Pengalaman Tak Terlupakan</h3>
+                                <p class="text-white/90 text-sm leading-relaxed">Nikmati momen berharga di setiap sudut desa</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- About Section -->
-    <section class="about-section">
-        <div class="container">
-            <div class="about-content">
-                <h2 class="section-title">Tentang Desa Mandalahahyu</h2>
-                <p>
-                    Desa Mandalahahyu terletak di Kecamatan Salopa, Kabupaten Tasikmalaya, Jawa Barat. 
-                    Desa ini memiliki berbagai UMKM yang berkembang dengan produk dan jasa berkualitas tinggi. 
-                    Dari produk makanan ringan hingga jasa bordir, semua tersedia untuk memenuhi kebutuhan Anda.
-                </p>
+    <!-- Information Center Section - Different Layout -->
+    <section class="py-24 bg-white dark:bg-gray-900 relative overflow-hidden transition-colors duration-300">
+        <div class="container mx-auto px-4">
+            <div class="max-w-7xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                    <!-- Left Side - Content -->
+                    <div class="space-y-6" data-aos="fade-right">
+                        <div class="inline-block p-4 bg-gradient-to-br from-accent/20 to-light/20 rounded-2xl border-2 border-accent/30 animate-float-rotate animate-glow-pulse">
+                            <span class="text-5xl animate-float-up-down">🎯</span>
+                        </div>
+                        <h2 class="text-4xl md:text-5xl font-black text-primary dark:text-white leading-tight">
+                            Mandalahahyu<br>
+                            <span class="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">Information Center</span>
+                        </h2>
+                        <p class="text-2xl text-accent dark:text-light font-bold">Solusi Lengkap Kebutuhan Wisata Anda</p>
+                        <p class="text-gray-700 dark:text-gray-300 leading-relaxed text-lg">
+                            Portal informasi resmi dan penyedia layanan wisata terpercaya sejak 2024. 
+                            Kami menyediakan berbagai informasi lengkap tentang destinasi wisata dan UMKM 
+                            unggulan di Desa Mandalahahyu.
+                        </p>
+                        <div class="flex flex-wrap gap-4 pt-4">
+                            <div class="flex items-center gap-3 px-6 py-3 bg-cream dark:bg-gray-800 rounded-xl border-2 border-light dark:border-gray-700 hover:border-accent transition-colors">
+                                <span class="text-2xl">✓</span>
+                                <span class="font-semibold text-gray-700 dark:text-gray-200">Informasi Lengkap</span>
+                            </div>
+                            <div class="flex items-center gap-3 px-6 py-3 bg-cream dark:bg-gray-800 rounded-xl border-2 border-light dark:border-gray-700 hover:border-accent transition-colors">
+                                <span class="text-2xl">✓</span>
+                                <span class="font-semibold text-gray-700 dark:text-gray-200">Terpercaya</span>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Right Side - Visual Element -->
+                    <div class="relative" data-aos="fade-left" data-aos-delay="200">
+                        <div class="bg-gradient-to-br from-accent via-secondary to-primary rounded-3xl p-12 shadow-2xl transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                            <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 space-y-4">
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-accent/20 dark:bg-accent/30 rounded-xl flex items-center justify-center">
+                                        <span class="text-3xl animate-float-up-down">🏞️</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-black text-xl text-primary dark:text-white">3 Destinasi</h3>
+                                        <p class="text-gray-600 dark:text-gray-300">Wisata Alam</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-gold/20 dark:bg-gold/30 rounded-xl flex items-center justify-center animate-float-rotate animate-glow-pulse">
+                                        <span class="text-3xl animate-float-up-down">🛍️</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-black text-xl text-primary dark:text-white">7 UMKM</h3>
+                                        <p class="text-gray-600 dark:text-gray-300">Produk & Jasa</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-center gap-4">
+                                    <div class="w-16 h-16 bg-secondary/20 dark:bg-secondary/30 rounded-xl flex items-center justify-center animate-float-rotate animate-glow-pulse">
+                                        <span class="text-3xl animate-float-up-down">📍</span>
+                                    </div>
+                                    <div>
+                                        <h3 class="font-black text-xl text-primary dark:text-white">1 Lokasi</h3>
+                                        <p class="text-gray-600 dark:text-gray-300">Desa Mandalahahyu</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Destinasi Wisata Section -->
+    <section id="destinasi" class="py-24 bg-white dark:bg-gray-900 relative overflow-hidden transition-colors duration-300">
+        <div class="absolute top-0 left-0 right-0 h-2 bg-gradient-to-r from-transparent via-accent to-transparent"></div>
+        <div class="container mx-auto px-4">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <div class="inline-block mb-4 p-4 bg-gradient-to-br from-secondary/20 to-accent/20 rounded-full hover:scale-110 transition-transform duration-300 animate-float-rotate animate-glow-pulse" data-aos="zoom-in" data-aos-delay="100">
+                    <span class="text-7xl animate-float-up-down">🏞️</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black text-primary dark:text-white mb-4" data-aos="fade-up" data-aos-delay="200">
+                    Destinasi <span class="text-transparent bg-clip-text bg-gradient-to-r from-secondary to-accent">Wisata</span>
+                </h2>
+                <p class="text-xl text-gray-600 dark:text-gray-300 font-medium" data-aos="fade-up" data-aos-delay="300">Jelajahi Keindahan Alam Desa Mandalahahyu</p>
+            </div>
+            <div id="destinasiGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Destinasi cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- UMKM Section -->
+    <section id="umkm" class="py-24 bg-gradient-to-b from-cream to-white dark:from-gray-900 dark:to-gray-800 relative overflow-hidden transition-colors duration-300">
+        <div class="absolute inset-0 opacity-5 pattern-grid"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="text-center mb-16" data-aos="fade-up">
+                <div class="inline-block mb-4 p-4 bg-gradient-to-br from-gold/20 to-orange/20 rounded-full hover:scale-110 transition-transform duration-300 animate-float-rotate animate-glow-pulse" data-aos="zoom-in" data-aos-delay="100">
+                    <span class="text-7xl animate-float-up-down animation-delay-2000">🛍️</span>
+                </div>
+                <h2 class="text-4xl md:text-5xl font-black text-primary mb-4" data-aos="fade-up" data-aos-delay="200">
+                    UMKM Desa <span class="text-transparent bg-clip-text bg-gradient-to-r from-accent to-gold">Mandalahahyu</span>
+                </h2>
+                <p class="text-xl text-gray-600 font-medium" data-aos="fade-up" data-aos-delay="300">Produk & Jasa Berkualitas dari Warga Lokal</p>
+            </div>
+            <div id="filterButtons" class="flex flex-wrap justify-center gap-4 mb-12" data-aos="fade-up" data-aos-delay="400">
+                <button class="filter-btn active px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 bg-accent text-white border-2 border-accent shadow-lg hover:shadow-xl hover:scale-110" data-category="all">
+                    ✨ Semua
+                </button>
+                <button class="filter-btn px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-2 border-gray-300 dark:border-gray-600 shadow-md hover:shadow-lg hover:scale-110 hover:border-accent dark:hover:border-accent" data-category="makanan">
+                    🍽️ Makanan
+                </button>
+                <button class="filter-btn px-8 py-4 rounded-full font-bold text-lg transition-all duration-300 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-200 border-2 border-gray-300 dark:border-gray-600 shadow-md hover:shadow-lg hover:scale-110 hover:border-accent dark:hover:border-accent" data-category="jasa">
+                    🎨 Jasa
+                </button>
+            </div>
+            <div id="umkmGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- UMKM cards will be inserted here by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Kontak Section - Different Design -->
+    <section id="kontak" class="py-24 bg-gradient-to-b from-white via-cream to-white dark:from-gray-900 dark:via-gray-800 dark:to-gray-900 relative overflow-hidden transition-colors duration-300">
+        <div class="absolute inset-0 opacity-5 pattern-dots"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="max-w-6xl mx-auto">
+                <div class="text-center mb-16" data-aos="fade-up">
+                    <div class="inline-block mb-6 p-5 bg-gradient-to-br from-accent/20 to-light/20 rounded-2xl border-2 border-accent/30 hover:scale-110 transition-transform duration-300 animate-float-rotate animate-glow-pulse">
+                        <span class="text-6xl animate-float-up-down">📞</span>
+                    </div>
+                    <h2 class="text-4xl md:text-5xl font-black text-primary dark:text-white mb-4">
+                        Hubungi <span class="bg-gradient-to-r from-secondary to-accent bg-clip-text text-transparent">Kami</span>
+                    </h2>
+                    <p class="text-xl text-gray-600 dark:text-gray-300">Ada pertanyaan? Jangan ragu untuk menghubungi kami!</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <!-- Location Card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl hover:shadow-2xl border-2 border-light/50 dark:border-gray-700/50 hover:border-accent transition-all duration-300 hover:-translate-y-2" data-aos="zoom-in" data-aos-delay="100">
+                        <div class="text-center">
+                            <div class="inline-block mb-6 p-5 bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary/30 dark:to-secondary/30 rounded-2xl">
+                                <span class="text-5xl">📍</span>
+                            </div>
+                            <h3 class="text-2xl font-black text-primary dark:text-white mb-4">Lokasi</h3>
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                Desa Mandalahahyu<br>
+                                Kecamatan Salopa<br>
+                                Kabupaten Tasikmalaya<br>
+                                Jawa Barat
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Info Card -->
+                    <div class="bg-gradient-to-br from-accent via-secondary to-primary rounded-3xl p-8 shadow-xl hover:shadow-2xl text-white transition-all duration-300 hover:-translate-y-2" data-aos="zoom-in" data-aos-delay="200">
+                        <div class="text-center">
+                            <div class="inline-block mb-6 p-5 bg-white/20 backdrop-blur-md rounded-2xl animate-float-rotate animate-glow-pulse">
+                                <span class="text-5xl animate-float-up-down">ℹ️</span>
+                            </div>
+                            <h3 class="text-2xl font-black mb-4">Informasi</h3>
+                            <p class="opacity-90 leading-relaxed">
+                                Portal resmi wisata<br>
+                                Desa Mandalahahyu<br>
+                                Informasi lengkap<br>
+                                & terpercaya
+                            </p>
+                        </div>
+                    </div>
+                    <!-- Contact Card -->
+                    <div class="bg-white dark:bg-gray-800 rounded-3xl p-8 shadow-xl hover:shadow-2xl border-2 border-light/50 dark:border-gray-700/50 hover:border-accent transition-all duration-300 hover:-translate-y-2" data-aos="zoom-in" data-aos-delay="300">
+                        <div class="text-center">
+                            <div class="inline-block mb-6 p-5 bg-gradient-to-br from-gold/20 to-orange/20 dark:from-gold/30 dark:to-orange/30 rounded-2xl animate-float-rotate animate-glow-pulse">
+                                <span class="text-5xl animate-float-up-down">🌟</span>
+                            </div>
+                            <h3 class="text-2xl font-black text-primary dark:text-white mb-4">Layanan</h3>
+                            <p class="text-gray-700 dark:text-gray-300 leading-relaxed">
+                                Informasi destinasi<br>
+                                Informasi UMKM<br>
+                                Panduan wisata<br>
+                                & konsultasi
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
 
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <p>&copy; 2026 UMKM Desa Mandalahahyu. Semua hak dilindungi.</p>
-                <p>Dibuat Oleh KKN 85 Mandalahayu</p>
-                <p>Kecamatan Salopa, Kabupaten Tasikmalaya, Jawa Barat</p>
+    <footer class="bg-dark text-white py-16 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5 pattern-dots-white"></div>
+        <div class="container mx-auto px-4 relative z-10">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 mb-12" data-aos="fade-up">
+                <div data-aos="fade-up" data-aos-delay="100">
+                    <h3 class="text-2xl font-black mb-6 text-light flex items-center gap-2">
+                        <span>🏞️</span> Destinasi
+                    </h3>
+                    <ul class="space-y-3">
+                        <li><a href="#destinasi" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Paraga Stones</a></li>
+                        <li><a href="#destinasi" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Curug Cimaranten</a></li>
+                        <li><a href="#destinasi" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Situ Palahlar</a></li>
+                    </ul>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="200">
+                    <h3 class="text-2xl font-black mb-6 text-light flex items-center gap-2">
+                        <span class="animate-float-up-down animation-delay-200">🛍️</span> UMKM
+                    </h3>
+                    <ul class="space-y-3">
+                        <li><a href="#umkm" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Umus Farm</a></li>
+                        <li><a href="#umkm" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Umus Bordir</a></li>
+                        <li><a href="#umkm" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Alia Metring</a></li>
+                        <li><a href="#umkm" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Ratsa Snack</a></li>
+                        <li><a href="#umkm" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Moring Lina</a></li>
+                        <li><a href="#umkm" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Kripik Mamah Azkia</a></li>
+                        <li><a href="#umkm" class="text-gray-300 hover:text-light transition-all duration-300 hover:translate-x-2 inline-block hover:font-semibold">Rasa Kabita</a></li>
+                    </ul>
+                </div>
+                <div data-aos="fade-up" data-aos-delay="300">
+                    <h3 class="text-2xl font-black mb-6 text-light flex items-center gap-2">
+                        <span class="animate-float-up-down animation-delay-400">📞</span> Kontak
+                    </h3>
+                    <p class="text-gray-300 leading-relaxed">
+                        Desa Mandalahahyu<br>
+                        Kecamatan Salopa<br>
+                        Kabupaten Tasikmalaya, Jawa Barat
+                    </p>
+                </div>
+            </div>
+            <div class="border-t-2 border-gray-700 pt-8 text-center" data-aos="fade-up" data-aos-delay="400">
+                <p class="text-gray-400 mb-2 text-lg">&copy; 2026 Explore Mandalahahyu. Semua hak dilindungi.</p>
+                <p class="text-gray-400">Dibuat oleh KKN 85 Mandalahayu</p>
             </div>
         </div>
     </footer>
 
+    <!-- AOS Script -->
+    <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
     <script src="script.js"></script>
 </body>
 </html>
